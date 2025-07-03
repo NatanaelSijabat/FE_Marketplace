@@ -1,3 +1,4 @@
+'use client'
 import * as React from "react";
 import { ChartColumn, Package, ShoppingBag, ShoppingCart, History, User2, User, LogOut } from "lucide-react";
 import {
@@ -10,23 +11,21 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
     SidebarRail,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-
-
+    const router = useRouter();
 
     const data = {
         navMain: [
             {
                 title: "Dashboard",
-                url: "/",
+                url: "/dashboard",
                 icons: <ChartColumn />
             },
             {
@@ -112,7 +111,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <span>Profile</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator className="bg-gray-100" />
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => {
+                                    signOut({ redirect: false }).then(() => {
+                                        router.refresh()
+                                    })
+                                }}>
                                     <LogOut size={32} strokeWidth={2.25} absoluteStrokeWidth />
                                     <span>Sign out</span>
                                 </DropdownMenuItem>
