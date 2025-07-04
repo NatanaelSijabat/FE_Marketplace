@@ -1,8 +1,9 @@
+import ProductView from '@/view/products'
 import React from 'react'
 
 const ProductsPage = () => {
   return (
-    <div>ProductPage</div>
+    <ProductView />
   )
 }
 

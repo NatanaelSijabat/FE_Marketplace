@@ -41,7 +41,6 @@ export const authOptions: NextAuthOptions = {
                         throw new Error("Invalid user data.");
                     }
                 } catch (error: any) {
-                    console.log(error,'err')
                     throw new Error(error?.response?.data?.message || "Authentication failed.");
                 }
             }

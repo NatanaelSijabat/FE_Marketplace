@@ -1,6 +1,6 @@
 'use client'
 import * as React from "react";
-import { ChartColumn, Package, ShoppingBag, ShoppingCart, History, User2, User, LogOut } from "lucide-react";
+import { ChartColumn, Package, ShoppingBag, ShoppingCart, History, User, LogOut } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -15,13 +15,15 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const router = useRouter();
+    const { data } = useSession()
 
-    const data = {
+    const datas = {
         navMain: [
             {
                 title: "Dashboard",
@@ -68,7 +70,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarGroup>
                     <SidebarGroupLabel>Navigation</SidebarGroupLabel>
                     <SidebarMenu>
-                        {data.navMain.map((item) => (
+                        {datas.navMain.map((item) => (
                             <SidebarMenuItem key={item.title}>
                                 <SidebarMenuButton className="cursor-pointer">
                                     <>
@@ -95,7 +97,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton>
-                                    <User2 /> Username
+                                    <Image src={data?.user.image ?? "/default-avatar.png"} alt="User Avatar" width={32} height={32} />
+                                    <span>{data?.user.firstName} {data?.user.lastName}</span>
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
