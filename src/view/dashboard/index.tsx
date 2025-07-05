@@ -1,8 +1,10 @@
 'use client'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useGetProducts } from '@/service/product';
 import { Package, ShoppingCart, TrendingUp, Users } from 'lucide-react'
 import React from 'react'
+import ProductChart from './productChart';
+import ProductPieChart from './categoryPie';
 
 const DashboardView = () => {
     const { data: dataProducts } = useGetProducts();
@@ -69,7 +71,30 @@ const DashboardView = () => {
                 </Card>
             </div>
 
-
+            <div className='grid grid-cols-2'>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className='font-bold text-2xl'>
+                            Products by Category
+                        </CardTitle>
+                        <CardDescription>Distribution of products across categories</CardDescription>
+                    </CardHeader>
+                    <CardContent >
+                        <ProductChart products={dataProducts?.products ?? []} />
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className='font-bold text-2xl'>
+                            Category Distribution
+                        </CardTitle>
+                        <CardDescription>Pie chart view of product categories</CardDescription>
+                    </CardHeader>
+                    <CardContent >
+                        <ProductPieChart products={dataProducts?.products ?? []} />
+                    </CardContent>
+                </Card>
+            </div>
         </>
     )
 }
