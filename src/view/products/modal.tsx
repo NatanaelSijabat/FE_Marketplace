@@ -1,4 +1,3 @@
-import { notifError, notifSucces } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -17,9 +16,11 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { notifError, notifSucces } from "@/lib/toast";
 import { AddProductSchema, AddProductT } from "@/schema/products.schema";
-import { usePostProduct, useUpdateProduct } from "@/service/product";
+import { useGetProductsCategories, usePostProduct, useUpdateProduct } from "@/service/product";
 import { ModalI } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
@@ -27,6 +28,8 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 
 const ModalProduct: React.FC<ModalI> = ({ open, setOpen, type, data }) => {
+    const { data: kategori } = useGetProductsCategories()
+
     const form = useForm<AddProductT>({
         resolver: zodResolver(AddProductSchema),
         defaultValues: {
@@ -49,19 +52,19 @@ const ModalProduct: React.FC<ModalI> = ({ open, setOpen, type, data }) => {
             if (type === "edit" && data?.id) {
                 const res = await updateProduct({ id: data.id, ...formData });
                 if (res?.status === 200) {
-                    notifSucces("Sukses Update Product");
+                    notifSucces("Success", "Product updated successfully");
                     setOpen(false);
                 } else {
-                    notifError(res?.message || "Gagal update");
+                    notifError(res?.message || "Failed to updated product");
                 }
             } else {
                 const res = await createProduct(formData);
                 if (res?.status === 201) {
-                    notifSucces("Sukses Tambah Product");
+                    notifSucces("Success", "Product added successfully");
                     setOpen(false);
                     form.reset();
                 } else {
-                    notifError(res?.message || "Gagal tambah");
+                    notifError(res?.message || "Failed to added product");
                 }
             }
         } catch (err: any) {
@@ -108,6 +111,7 @@ const ModalProduct: React.FC<ModalI> = ({ open, setOpen, type, data }) => {
                             {Object.entries(shape).map(([key, schema]) => {
                                 const inputType = schema instanceof z.ZodNumber ? "number" : "text";
                                 const isTextarea = key === "description";
+                                const isKategori = key === "category"
                                 const isFullWidth = key === "title" || key === "description";
 
                                 const fieldComponent = (
@@ -125,6 +129,20 @@ const ModalProduct: React.FC<ModalI> = ({ open, setOpen, type, data }) => {
                                                             rows={4}
                                                             className="border border-gray-300 focus:border-black focus:ring-0"
                                                         />
+                                                    ) : isKategori ? (
+                                                        <Select
+                                                            onValueChange={(val) => field.onChange(val)}
+                                                            value={field.value ? String(field.value) : undefined}
+                                                        >
+                                                            <SelectTrigger className="w-full cursor-pointer border border-gray-300 focus:border-black focus:ring-0">
+                                                                <SelectValue placeholder="Select Categories" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {kategori?.map((item, idx) => (
+                                                                    <SelectItem value={item.url} key={idx}>{item.name}</SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
                                                     ) : (
                                                         <Input
                                                             type={inputType}

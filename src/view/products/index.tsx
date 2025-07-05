@@ -7,10 +7,10 @@ import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { useDeleteProduct, useGetProducts, useGetProductsCategories } from '@/service/product'
 import ModalProduct from './modal'
-import { notifError, notifSucces } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { formatDollar } from '@/helpers'
+import { notifError, notifSucces } from '@/lib/toast'
 
 const ProductView = () => {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -34,7 +34,7 @@ const ProductView = () => {
     const handleDelete = (id: number) => {
         deleteProduct(id).then((res) => {
             if (res?.status === 200) {
-                notifSucces("Sukses Delete Product");
+                notifSucces("Success","Product deleted successfully");
             } else {
                 notifError(res.message);
             }

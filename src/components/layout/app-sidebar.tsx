@@ -18,10 +18,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useCartStore } from "@/store/cart-store";
+import { Badge } from "../ui/badge";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const router = useRouter();
     const { data } = useSession()
+    const itemsCart = useCartStore((state) => state.items)
+
 
     const datas = {
         navMain: [
@@ -84,6 +88,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                         >
                                             {item.title}
                                         </Link>
+                                        {item.title === "Cart" && itemsCart.length > 0 && (
+                                            <Badge variant="secondary" className="ml-auto font-bold">
+                                                {itemsCart.length}
+                                            </Badge>
+                                        )}
                                     </>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>

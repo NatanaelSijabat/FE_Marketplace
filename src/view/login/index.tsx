@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { notifError, notifSucces } from "@/components/ui/alert";
 import { signIn } from "next-auth/react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { PasswordInput } from "@/components/ui/input-password";
 import { authSchema } from "@/schema/login.schema";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { notifError, notifSucces } from "@/lib/toast";
 
 export function LoginForm({
   className,
@@ -35,9 +36,9 @@ export function LoginForm({
     }).then((res) => {
       if (res?.status === 200) {
         router.push("/dashboard");
-        notifSucces(`Welcome back, ${value.username}!`);
+        notifSucces("Login successful",`Welcome back, ${value.username}!`)
       } else {
-        notifError(`${res?.error}`);
+        notifError(res?.error ?? "Login failed. Please try again.")
       }
     });
   };
